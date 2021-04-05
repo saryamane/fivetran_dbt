@@ -9,6 +9,11 @@ config-version: 2
 # This setting configures which "profile" dbt uses for this project.
 profile: 'fivetran'
 
+vars:
+    fivetran_log:
+        fivetran_log_using_transformations: false # this will disable all transformation + trigger_table logic
+        fivetran_log_using_triggers: false # this will disable only trigger_table logic
+
 # These configurations specify where dbt should look for different types of files.
 # The `source-paths` config, for example, states that models in this project can be
 # found in the "models/" directory. You probably won't need to change these!
