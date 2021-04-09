@@ -44,7 +44,7 @@ connector_metrics as (
     select
         connector.connector_id,
         connector.connector_name,
-        -- connector.connector_type,
+        connector.connector_type,
         connector.destination_id,
         connector.is_paused,
         connector.set_up_at,
@@ -56,7 +56,7 @@ connector_metrics as (
     from connector 
     left join connector_log 
         on connector_log.connector_id = connector.connector_id
-    group by 1,2,3,4,5
+    group by 1,2,3,4,5,6
 
 ),
 
@@ -83,7 +83,7 @@ connector_recent_logs as (
     select 
         connector_health.connector_id,
         connector_health.connector_name,
-        -- connector_health.connector_type,
+        connector_health.connector_type,
         connector_health.destination_id,
         connector_health.connector_health,
         connector_health.last_sync_started_at,
@@ -101,7 +101,7 @@ connector_recent_logs as (
         -- only looking at erors and warnings (excluding syncs)
         and connector_log.event_type != 'INFO'  
 
-    group by 1,2,3,4,5,6,7,8,9,10 -- de-duping error messages
+    group by 1,2,3,4,5,6,7,8,9,10,11 -- de-duping error messages
     
 
 ),
@@ -111,7 +111,7 @@ final as (
     select
         connector_recent_logs.connector_id,
         connector_recent_logs.connector_name,
-        -- connector_recent_logs.connector_type,
+        connector_recent_logs.connector_type,
         connector_recent_logs.destination_id,
         destination.destination_name,
         connector_recent_logs.connector_health,
@@ -129,7 +129,7 @@ final as (
         on connector_recent_logs.connector_id = schema_changes.connector_id 
 
     join destination on destination.destination_id = connector_recent_logs.destination_id
-    group by 1,2,3,4,5,6,7,8,9
+    group by 1,2,3,4,5,6,7,8,9,10
 )
 
 select * from final

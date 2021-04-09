@@ -52,7 +52,7 @@ connector_event_counts as (
         pivot_out_events.count_schema_changes,
         connector.connector_name,
         connector.connector_id,
-        -- connector.connector_type,
+        connector.connector_type,
         connector.destination_name,
         connector.destination_id,
         connector.set_up_at
@@ -86,7 +86,7 @@ connector_event_history as (
         cast(spine.date_day as date) as date_day,
         connector_event_counts.connector_name,
         connector_event_counts.connector_id,
-        -- connector_event_counts.connector_type,
+        connector_event_counts.connector_type,
         connector_event_counts.destination_name,
         connector_event_counts.destination_id,
         max(case 
@@ -105,7 +105,7 @@ connector_event_history as (
     spine join connector_event_counts
         on spine.date_day  >= cast( {{ dbt_utils.date_trunc('day', 'connector_event_counts.set_up_at') }} as date)
 
-    group by 1,2,3,4,5
+    group by 1,2,3,4,5,6
 ),
 
 -- now rejoin spine to get a complete calendar
@@ -115,7 +115,7 @@ join_event_history as (
         spine.date_day,
         connector_event_history.connector_name,
         connector_event_history.connector_id,
-        -- connector_event_history.connector_type,
+        connector_event_history.connector_type,
         connector_event_history.destination_name,
         connector_event_history.destination_id,
         max(connector_event_history.count_api_calls) as count_api_calls,
@@ -126,7 +126,7 @@ join_event_history as (
     spine left join connector_event_history
         on cast(spine.date_day as date) = connector_event_history.date_day
 
-    group by 1,2,3,4,5
+    group by 1,2,3,4,5,6
 ),
 
 final as (

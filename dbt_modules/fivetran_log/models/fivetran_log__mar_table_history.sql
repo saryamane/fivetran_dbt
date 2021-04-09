@@ -59,7 +59,7 @@ mar_join as (
 
     select 
         latest_mar.*,
-        -- connector.connector_type,
+        connector.connector_type,
         connector.connector_id,
         destination.destination_name
 
